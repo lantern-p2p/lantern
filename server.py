@@ -9,6 +9,7 @@ from collections import defaultdict
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
+from urllib.parse import unquote, urlsplit
 
 try:
     import websockets
@@ -23,7 +24,7 @@ rooms: dict[str, set] = defaultdict(set)
 async def leave_room(websocket, room: str | None) -> None:
     if not room:
         return
-    peers = rooms.get(room)
+    peers = rooms.pop(room, None)
     if not peers:
         return
     peers.discard(websocket)
@@ -31,9 +32,7 @@ async def leave_room(websocket, room: str | None) -> None:
         try:
             await peer.send(json.dumps({"type": "peer-left"}))
         except websockets.ConnectionClosed:
-            peers.discard(peer)
-    if not peers:
-        rooms.pop(room, None)
+            pass
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -43,6 +42,20 @@ class Handler(SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Cache-Control", "no-store, max-age=0")
         super().end_headers()
+
+    def translate_path(self, path: str) -> str:
+        requested = unquote(urlsplit(path).path).lstrip("/")
+        if not requested:
+            requested = "index.html"
+        candidate = (ROOT / requested).resolve()
+        allowed = {
+            (ROOT / "index.html").resolve(),
+            (ROOT / "app.js").resolve(),
+            (ROOT / "tests" / "browser_smoke.html").resolve(),
+        }
+        if candidate not in allowed:
+            return str(ROOT / "__not_found__")
+        return str(candidate)
 
     def log_message(self, _format, *_args):
         pass
@@ -90,7 +103,13 @@ async def main():
     http = ThreadingHTTPServer(("127.0.0.1", 8765), Handler)
     Thread(target=http.serve_forever, daemon=True).start()
     print("Lantern prototype: http://127.0.0.1:8765  (Ctrl+C to stop)")
-    async with websockets.serve(signaling, "127.0.0.1", 8766, max_size=2**20):
+    async with websockets.serve(
+        signaling,
+        "127.0.0.1",
+        8766,
+        max_size=2**20,
+        origins=[None, "http://127.0.0.1:8765", "http://localhost:8765"],
+    ):
         await asyncio.Future()
 
 

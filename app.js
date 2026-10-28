@@ -132,8 +132,22 @@ function showFiles(fileList) {
 }
 function formatBytes(n) { return n < 1024 ? `${n} B` : n < 1048576 ? `${(n / 1024).toFixed(1)} KB` : `${(n / 1048576).toFixed(2)} MB`; }
 function waitBuffered() {
+  if (!channel || channel.readyState !== 'open') throw new Error('Transfer connection is not open.');
   if (channel.bufferedAmount < 1024 * 1024) return Promise.resolve();
-  return new Promise((resolve) => { channel.onbufferedamountlow = resolve; channel.bufferedAmountLowThreshold = 256 * 1024; });
+  const currentChannel = channel;
+  return new Promise((resolve, reject) => {
+    const cleanup = () => {
+      currentChannel.removeEventListener('bufferedamountlow', onLow);
+      currentChannel.removeEventListener('close', onClose);
+    };
+    const onLow = () => { cleanup(); resolve(); };
+    const onClose = () => { cleanup(); reject(new Error('Connection closed while waiting to send data.')); };
+    currentChannel.bufferedAmountLowThreshold = 256 * 1024;
+    currentChannel.addEventListener('bufferedamountlow', onLow, { once: true });
+    currentChannel.addEventListener('close', onClose, { once: true });
+    if (currentChannel.readyState !== 'open') onClose();
+    else if (currentChannel.bufferedAmount < currentChannel.bufferedAmountLowThreshold) onLow();
+  });
 }
 
 async function sendFiles() {
@@ -141,6 +155,7 @@ async function sendFiles() {
   isSending = true; updateControls();
   try {
     const totalBytes = files.reduce((n, file) => n + file.size, 0);
+    if (!Number.isSafeInteger(totalBytes)) throw new Error('The selected files are too large to calculate safely.');
     channel.send(JSON.stringify({ kind: 'start', count: files.length, totalBytes }));
     let done = 0;
     for (const file of files) {
@@ -151,7 +166,7 @@ async function sendFiles() {
       const chunkSize = 64 * 1024;
       for (let offset = 0; offset < file.size; offset += chunkSize) {
         await waitBuffered(); channel.send(await file.slice(offset, offset + chunkSize).arrayBuffer());
-        done += Math.min(chunkSize, file.size - offset); $('progress').value = done / Math.max(1, files.reduce((n, f) => n + f.size, 0));
+        done += Math.min(chunkSize, file.size - offset); $('progress').value = done / Math.max(1, totalBytes);
       }
       channel.send(JSON.stringify({ kind: 'end-file' }));
     }
@@ -214,7 +229,8 @@ async function acceptFiles() {
     const safePaths = incoming.files.map(({ meta }) => {
       const normalized = meta.path.replaceAll('\\', '/');
       const parts = normalized.split('/');
-      if (!normalized || normalized.startsWith('/') || /^[a-z]:/i.test(normalized) || parts.some((part) => !part || part === '.' || part === '..' || part.includes('\0'))) {
+      const invalidWindowsName = (part) => /[<>:"|?*]/.test(part) || /[. ]$/.test(part) || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(part);
+      if (!normalized || normalized.startsWith('/') || /^[a-z]:/i.test(normalized) || parts.some((part) => !part || part === '.' || part === '..' || part.includes('\0') || invalidWindowsName(part))) {
         throw new Error('Rejected an unsafe or empty file path.');
       }
       return parts;
@@ -225,7 +241,22 @@ async function acceptFiles() {
         const parts = safePaths[index];
         let directory = root;
         for (const segment of parts.slice(0, -1)) directory = await directory.getDirectoryHandle(segment, { create: true });
-        const handle = await directory.getFileHandle(parts.at(-1), { create: true });
+        const originalName = parts.at(-1);
+        const extensionAt = originalName.lastIndexOf('.');
+        const baseName = extensionAt > 0 ? originalName.slice(0, extensionAt) : originalName;
+        const extension = extensionAt > 0 ? originalName.slice(extensionAt) : '';
+        let handle;
+        for (let suffix = 0; suffix < 10000; suffix++) {
+          const candidate = suffix ? `${baseName} (${suffix})${extension}` : originalName;
+          try {
+            await directory.getFileHandle(candidate);
+          } catch (error) {
+            if (error.name !== 'NotFoundError') throw error;
+            handle = await directory.getFileHandle(candidate, { create: true });
+            break;
+          }
+        }
+        if (!handle) throw new Error(`Could not choose a non-overwriting name for ${originalName}.`);
         const writable = await handle.createWritable();
         await writable.write(new Blob(item.parts));
         await writable.close();

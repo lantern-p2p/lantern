@@ -7,7 +7,6 @@
   <meta name="description" content="Lantern — a private, direct way to send files and folders between devices.">
   <title>Lantern — send files, directly</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
     :root {
       color-scheme: dark;
       --bg: #0c1012;
@@ -21,7 +20,7 @@
       --lime: #d3f17a;
       --lime-dark: #9cb84e;
       --orange: #ed9a61;
-      font: 15px/1.5 'DM Sans', system-ui, sans-serif;
+      font: 15px/1.5 'Segoe UI', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       font-synthesis: none;
@@ -41,15 +40,15 @@
     .topbar { height: 54px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ffffff12; padding-bottom: 18px }
     .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--text) }
     .brand-mark { width: 32px; height: 36px; display: grid; place-items: center }
-    .brand-name { font: 800 19px/1 'Manrope', sans-serif; letter-spacing: -.06em }
-    .brand-tag { color: var(--muted); font: 10px 'DM Mono', monospace; letter-spacing: .16em; margin-left: 8px }
+    .brand-name { font: 800 19px/1 'Segoe UI', system-ui, sans-serif; letter-spacing: -.06em }
+    .brand-tag { color: var(--muted); font: 10px Consolas, monospace; letter-spacing: .16em; margin-left: 8px }
     .top-right { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px }
     .secure-pill, .beta-pill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; background:#111716aa }
     .secure-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 12px #d3f17a88 }
     .hero { display: grid; grid-template-columns: 1fr 360px; gap: 42px; align-items: center; padding: 70px 0 53px }
-    .eyebrow { color: var(--lime); font: 11px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .17em; display: flex; align-items: center; gap: 10px }
+    .eyebrow { color: var(--lime); font: 11px Consolas, monospace; text-transform: uppercase; letter-spacing: .17em; display: flex; align-items: center; gap: 10px }
     .eyebrow::before { content: ''; width: 23px; height: 1px; background: var(--lime) }
-    h1 { font: 700 clamp(42px, 6vw, 68px)/1.04 'Manrope', sans-serif; letter-spacing: -.07em; margin: 18px 0 17px; max-width: 660px }
+    h1 { font: 700 clamp(42px, 6vw, 68px)/1.04 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif; letter-spacing: -.07em; margin: 18px 0 17px; max-width: 660px }
     h1 span { color: var(--lime) }
     .hero-copy { color: #a4aeaa; font-size: 16px; max-width: 530px; margin: 0 }
     .hero-art { min-height: 195px; display: grid; place-items: center; position: relative; isolation: isolate }
@@ -58,14 +57,14 @@
     .steps { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); background: #111716a8; border-radius: 15px; margin-bottom: 20px; overflow: hidden }
     .step { display:flex; align-items:center; gap:13px; padding:15px 19px; min-height:69px }
     .step + .step { border-left:1px solid var(--line) }
-    .step-num { color:var(--lime); font:11px 'DM Mono',monospace; border:1px solid #d3f17a40; border-radius:8px; width:30px; height:30px; display:grid; place-items:center; flex:none }
+    .step-num { color:var(--lime); font:11px Consolas,monospace; border:1px solid #d3f17a40; border-radius:8px; width:30px; height:30px; display:grid; place-items:center; flex:none }
     .step strong { display:block; font-size:12px; font-weight:600 }
     .step small { display:block; color:var(--muted); font-size:11px; margin-top:2px }
     .workspace { display:grid; grid-template-columns: .88fr 1.12fr; gap:16px }
     .card { border:1px solid var(--line); border-radius:15px; background:linear-gradient(145deg,#151c1d,#111616); padding:21px; min-width:0 }
     .card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:17px }
-    .card-kicker { color:var(--muted); font:10px 'DM Mono',monospace; text-transform:uppercase; letter-spacing:.14em }
-    h2 { font:650 19px 'Manrope',sans-serif; letter-spacing:-.04em; margin:4px 0 0 }
+    .card-kicker { color:var(--muted); font:10px Consolas,monospace; text-transform:uppercase; letter-spacing:.14em }
+    h2 { font:650 19px 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif; letter-spacing:-.04em; margin:4px 0 0 }
     .card-icon { width:34px;height:34px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;color:var(--lime);background:#d3f17a08 }
     .connection-actions { display:flex; flex-direction:column; gap:10px }
     .primary, .secondary, .icon-button, .pick {
@@ -76,16 +75,16 @@
     .secondary,.pick { background:#1a2323; border-color:#303c3b; color:#e5e9df }
     .secondary:hover:not(:disabled),.pick:hover { background:#222e2c; border-color:#566755 }
     .primary:disabled,.secondary:disabled { opacity:.42; cursor:not-allowed }
-    .or { display:flex;align-items:center;gap:10px;color:var(--faint);font:10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em }
+    .or { display:flex;align-items:center;gap:10px;color:var(--faint);font:10px Consolas,monospace;text-transform:uppercase;letter-spacing:.1em }
     .or::before,.or::after { content:'';height:1px;background:var(--line-soft);flex:1 }
     .join-row { display:flex; gap:8px }
-    input[type=text] { min-width:0; width:100%; border:1px solid #303c3b; border-radius:9px; background:#0f1515; color:var(--text); padding:10px 12px; outline:none; font:13px 'DM Mono',monospace; letter-spacing:.03em }
+    input[type=text] { min-width:0; width:100%; border:1px solid #303c3b; border-radius:9px; background:#0f1515; color:var(--text); padding:10px 12px; outline:none; font:13px Consolas,monospace; letter-spacing:.03em }
     input[type=text]:focus { border-color:var(--lime-dark); box-shadow:0 0 0 3px #d3f17a12 }
     .join-row .secondary { flex:none }
     .room-box { margin-top:16px; border:1px dashed #384643; border-radius:11px; padding:13px 14px; background:#0d1312 }
-    .room-label { color:var(--muted);font:10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em }
+    .room-label { color:var(--muted);font:10px Consolas,monospace;text-transform:uppercase;letter-spacing:.1em }
     .room-line { display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px }
-    #room { color:var(--lime);font:600 21px 'DM Mono',monospace;letter-spacing:.1em;word-break:break-all }
+    #room { color:var(--lime);font:600 21px Consolas,monospace;letter-spacing:.1em;word-break:break-all }
     .icon-button { min-height:34px;padding:6px 9px;background:#19211f;border-color:#303c3b;color:#c4cec8;display:grid;place-items:center }
     .icon-button:hover { border-color:#67795a;color:var(--lime) }
     .room-hint { color:var(--faint);font-size:11px;margin:7px 0 0 }
@@ -118,7 +117,7 @@
     .status-light[data-state="error"] { background:#ff786c;box-shadow:0 0 11px #ff786c88 }
     .privacy-note { display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:11px;padding:17px 2px 0 }
     .privacy-note svg { flex:none;color:var(--lime);margin-top:1px }
-    footer { border-top:1px solid #ffffff12;margin-top:35px;padding-top:17px;display:flex;justify-content:space-between;gap:16px;color:var(--faint);font:10px 'DM Mono',monospace;letter-spacing:.03em }
+    footer { border-top:1px solid #ffffff12;margin-top:35px;padding-top:17px;display:flex;justify-content:space-between;gap:16px;color:var(--faint);font:10px Consolas,monospace;letter-spacing:.03em }
     @media(max-width:760px) { .hero{grid-template-columns:1fr;padding:52px 0 36px;gap:10px}.hero-art{display:none}.workspace{grid-template-columns:1fr}.transfer-card{grid-row:auto}.steps{grid-template-columns:1fr}.step + .step{border-left:0;border-top:1px solid var(--line)} }
     @media(max-width:480px) { .shell{width:calc(100% - 28px);padding-top:16px}.brand-tag,.secure-pill{display:none}.topbar{height:45px}.hero{padding-top:43px}.card{padding:16px}.transfer-tools{display:grid;grid-template-columns:1fr 1fr}.transfer-tools .primary{grid-column:1/-1;margin:0}.join-row{flex-direction:column}.join-row .secondary{width:100%}footer{flex-direction:column} }
     @media(prefers-reduced-motion:reduce) { *,*::before,*::after{scroll-behavior:auto!important;transition:none!important} }
@@ -184,8 +183,8 @@
       </article>
     </section>
 
-    <div class="privacy-note"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.2 3.5 5v4.4c0 4 2.8 6.8 6.5 8.4 3.7-1.6 6.5-4.4 6.5-8.4V5L10 2.2Z" stroke="currentColor" stroke-width="1.4"/><path d="m7.2 10 1.8 1.8 3.8-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Prototype note: file data is sent over a direct WebRTC channel. The local signaling service only helps peers connect. This preview is not security-audited; avoid sensitive files.</span></div>
-    <footer><span>LANTERN · PRIVATE BY DESIGN</span><span>LOCAL PROTOTYPE · NOT PUBLISHED</span></footer>
+    <div class="privacy-note"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.2 3.5 5v4.4c0 4 2.8 6.8 6.5 8.4 3.7-1.6 6.5-4.4 6.5-8.4V5L10 2.2Z" stroke="currentColor" stroke-width="1.4"/><path d="m7.2 10 1.8 1.8 3.8-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Prototype: files travel over a direct WebRTC data channel, but Google STUN is contacted to help establish connectivity and may see your public IP. The local signaling server does not relay file data. Not security-audited; do not send sensitive files.</span></div>
+    <footer><span>LANTERN · DIRECT BY DESIGN</span><span>LOCAL PROTOTYPE · SELF-HOSTED</span></footer>
   </div>
   <script src="app.js"></script>
 </body>
