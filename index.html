@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c1012">
+  <meta name="description" content="Lantern — a private, direct way to send files and folders between devices.">
+  <title>Lantern — send files, directly</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+    :root {
+      color-scheme: dark;
+      --bg: #0c1012;
+      --panel: #121819;
+      --panel-raised: #171f20;
+      --line: #263131;
+      --line-soft: #202929;
+      --text: #f1f1e9;
+      --muted: #899492;
+      --faint: #5e6b68;
+      --lime: #d3f17a;
+      --lime-dark: #9cb84e;
+      --orange: #ed9a61;
+      font: 15px/1.5 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-synthesis: none;
+    }
+    * { box-sizing: border-box }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 78% 0%, #29312355 0, transparent 34rem),
+        radial-gradient(ellipse at 0% 38%, #13252244 0, transparent 28rem),
+        var(--bg);
+    }
+    button, input { font: inherit }
+    button { color: inherit }
+    .shell { width: min(1140px, calc(100% - 48px)); margin: 0 auto; padding: 26px 0 38px }
+    .topbar { height: 54px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ffffff12; padding-bottom: 18px }
+    .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--text) }
+    .brand-mark { width: 32px; height: 36px; display: grid; place-items: center }
+    .brand-name { font: 800 19px/1 'Manrope', sans-serif; letter-spacing: -.06em }
+    .brand-tag { color: var(--muted); font: 10px 'DM Mono', monospace; letter-spacing: .16em; margin-left: 8px }
+    .top-right { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px }
+    .secure-pill, .beta-pill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; background:#111716aa }
+    .secure-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 12px #d3f17a88 }
+    .hero { display: grid; grid-template-columns: 1fr 360px; gap: 42px; align-items: center; padding: 70px 0 53px }
+    .eyebrow { color: var(--lime); font: 11px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .17em; display: flex; align-items: center; gap: 10px }
+    .eyebrow::before { content: ''; width: 23px; height: 1px; background: var(--lime) }
+    h1 { font: 700 clamp(42px, 6vw, 68px)/1.04 'Manrope', sans-serif; letter-spacing: -.07em; margin: 18px 0 17px; max-width: 660px }
+    h1 span { color: var(--lime) }
+    .hero-copy { color: #a4aeaa; font-size: 16px; max-width: 530px; margin: 0 }
+    .hero-art { min-height: 195px; display: grid; place-items: center; position: relative; isolation: isolate }
+    .halo { position:absolute; width:210px; height:160px; border-radius:50%; background:#d3f17a12; filter:blur(35px); z-index:-1 }
+    .hero-art svg { width: 190px; filter: drop-shadow(0 12px 34px #d3f17a25) }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); background: #111716a8; border-radius: 15px; margin-bottom: 20px; overflow: hidden }
+    .step { display:flex; align-items:center; gap:13px; padding:15px 19px; min-height:69px }
+    .step + .step { border-left:1px solid var(--line) }
+    .step-num { color:var(--lime); font:11px 'DM Mono',monospace; border:1px solid #d3f17a40; border-radius:8px; width:30px; height:30px; display:grid; place-items:center; flex:none }
+    .step strong { display:block; font-size:12px; font-weight:600 }
+    .step small { display:block; color:var(--muted); font-size:11px; margin-top:2px }
+    .workspace { display:grid; grid-template-columns: .88fr 1.12fr; gap:16px }
+    .card { border:1px solid var(--line); border-radius:15px; background:linear-gradient(145deg,#151c1d,#111616); padding:21px; min-width:0 }
+    .card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:17px }
+    .card-kicker { color:var(--muted); font:10px 'DM Mono',monospace; text-transform:uppercase; letter-spacing:.14em }
+    h2 { font:650 19px 'Manrope',sans-serif; letter-spacing:-.04em; margin:4px 0 0 }
+    .card-icon { width:34px;height:34px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;color:var(--lime);background:#d3f17a08 }
+    .connection-actions { display:flex; flex-direction:column; gap:10px }
+    .primary, .secondary, .icon-button, .pick {
+      border:1px solid transparent; border-radius:9px; min-height:43px; padding:10px 13px; cursor:pointer; transition:background .16s,border-color .16s,transform .16s;
+    }
+    .primary { background:var(--lime); color:#14190c; font-weight:700; box-shadow:0 5px 22px #d3f17a1a }
+    .primary:hover:not(:disabled) { background:#e2ff90; transform:translateY(-1px) }
+    .secondary,.pick { background:#1a2323; border-color:#303c3b; color:#e5e9df }
+    .secondary:hover:not(:disabled),.pick:hover { background:#222e2c; border-color:#566755 }
+    .primary:disabled,.secondary:disabled { opacity:.42; cursor:not-allowed }
+    .or { display:flex;align-items:center;gap:10px;color:var(--faint);font:10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em }
+    .or::before,.or::after { content:'';height:1px;background:var(--line-soft);flex:1 }
+    .join-row { display:flex; gap:8px }
+    input[type=text] { min-width:0; width:100%; border:1px solid #303c3b; border-radius:9px; background:#0f1515; color:var(--text); padding:10px 12px; outline:none; font:13px 'DM Mono',monospace; letter-spacing:.03em }
+    input[type=text]:focus { border-color:var(--lime-dark); box-shadow:0 0 0 3px #d3f17a12 }
+    .join-row .secondary { flex:none }
+    .room-box { margin-top:16px; border:1px dashed #384643; border-radius:11px; padding:13px 14px; background:#0d1312 }
+    .room-label { color:var(--muted);font:10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em }
+    .room-line { display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px }
+    #room { color:var(--lime);font:600 21px 'DM Mono',monospace;letter-spacing:.1em;word-break:break-all }
+    .icon-button { min-height:34px;padding:6px 9px;background:#19211f;border-color:#303c3b;color:#c4cec8;display:grid;place-items:center }
+    .icon-button:hover { border-color:#67795a;color:var(--lime) }
+    .room-hint { color:var(--faint);font-size:11px;margin:7px 0 0 }
+    .transfer-card { grid-row:span 2 }
+    .transfer-tools { display:flex;gap:8px;align-items:center;flex-wrap:wrap }
+    .pick { display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;min-height:39px;padding:8px 11px }
+    input[type=file] { position:absolute;width:1px;height:1px;opacity:0;pointer-events:none }
+    #send { min-height:39px;margin-left:auto;padding:8px 13px }
+    #accept { min-height:39px;padding:8px 13px }
+    .dropzone { border:1px dashed #394746;border-radius:12px;min-height:140px;margin-top:14px;display:grid;place-items:center;text-align:center;padding:18px;background:radial-gradient(ellipse at center,#d3f17a08,transparent 65%);transition:border .2s,background .2s }
+    .dropzone.drag { border-color:var(--lime);background:#d3f17a12 }
+    .drop-icon { color:var(--lime);margin-bottom:6px }
+    .dropzone strong { display:block;font-size:13px;font-weight:600 }
+    .dropzone p { color:var(--muted);font-size:11px;margin:3px 0 0 }
+    #selection { color:var(--muted);font-size:11px;margin-top:13px }
+    #files { list-style:none;margin:8px 0 0;padding:0;max-height:150px;overflow:auto }
+    #files:empty { display:none }
+    #files li { display:flex;align-items:center;gap:9px;padding:9px 2px;border-bottom:1px solid var(--line-soft);font-size:11px;color:#c7d0ca;overflow-wrap:anywhere }
+    #files li::before { content:'';width:7px;height:9px;border:1px solid #839188;border-radius:2px;flex:none }
+    #progress { display:block;width:100%;height:4px;margin-top:12px;border:0;border-radius:99px;overflow:hidden;background:#26302e }
+    #progress::-webkit-progress-bar { background:#26302e }
+    #progress::-webkit-progress-value { background:var(--lime);border-radius:99px }
+    #progress::-moz-progress-bar { background:var(--lime);border-radius:99px }
+    .status-card { display:flex;align-items:flex-start;gap:11px;padding:14px 16px }
+    .status-light { width:8px;height:8px;border-radius:50%;background:#77817e;margin-top:6px;flex:none }
+    .status-copy { min-width:0 }
+    .status-title { color:#dfe6dd;font-size:12px;font-weight:600 }
+    #status { color:var(--muted);font-size:11px;margin-top:2px;min-height:1.4em }
+    .status-light[data-state="online"] { background:var(--lime);box-shadow:0 0 11px #d3f17a88 }
+    .status-light[data-state="error"] { background:#ff786c;box-shadow:0 0 11px #ff786c88 }
+    .privacy-note { display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:11px;padding:17px 2px 0 }
+    .privacy-note svg { flex:none;color:var(--lime);margin-top:1px }
+    footer { border-top:1px solid #ffffff12;margin-top:35px;padding-top:17px;display:flex;justify-content:space-between;gap:16px;color:var(--faint);font:10px 'DM Mono',monospace;letter-spacing:.03em }
+    @media(max-width:760px) { .hero{grid-template-columns:1fr;padding:52px 0 36px;gap:10px}.hero-art{display:none}.workspace{grid-template-columns:1fr}.transfer-card{grid-row:auto}.steps{grid-template-columns:1fr}.step + .step{border-left:0;border-top:1px solid var(--line)} }
+    @media(max-width:480px) { .shell{width:calc(100% - 28px);padding-top:16px}.brand-tag,.secure-pill{display:none}.topbar{height:45px}.hero{padding-top:43px}.card{padding:16px}.transfer-tools{display:grid;grid-template-columns:1fr 1fr}.transfer-tools .primary{grid-column:1/-1;margin:0}.join-row{flex-direction:column}.join-row .secondary{width:100%}footer{flex-direction:column} }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after{scroll-behavior:auto!important;transition:none!important} }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Lantern home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 8h12l3 5v17l-9 8-9-8V13l3-5Z" stroke="#D3F17A" stroke-width="2"/><path d="M16 8V5h8v3M11 15h18M14 30h12" stroke="#D3F17A" stroke-width="2" stroke-linecap="round"/><path d="M20 16v11m-4-7 4-4 4 4" stroke="#ED9A61" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 22H4m32 0h-4M20 2V0" stroke="#ED9A61" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+        <span class="brand-name">lantern</span><span class="brand-tag">P2P TRANSFER</span>
+      </a>
+      <div class="top-right"><span class="secure-pill"><i class="secure-dot"></i> DIRECT CONNECTION</span><span class="beta-pill">LOCAL PREVIEW</span></div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">A clearer way to share</div>
+        <h1>Files go <span>straight</span><br>to each other.</h1>
+        <p class="hero-copy">Send a file, a folder, or a whole project directly between devices. No cloud upload in the middle.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="halo"></div><svg viewBox="0 0 210 190" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M87 39h36l11 17v72l-29 25-29-25V56l11-17Z" fill="#18201A" stroke="#D3F17A" stroke-width="3"/><path d="M93 39v-9h24v9M76 61h58M82 119h46" stroke="#D3F17A" stroke-width="3" stroke-linecap="round"/><path d="M105 67v43m-14-27 14-14 14 14" stroke="#ED9A61" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M47 95H20m170 0h-27M105 17V4" stroke="#ED9A61" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="95" r="4" fill="#D3F17A"/><circle cx="190" cy="95" r="4" fill="#D3F17A"/><path d="M42 84c9-8 19-12 29-13M168 84c-9-8-19-12-29-13" stroke="#71814D" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 6"/></svg></div>
+    </section>
+
+    <section class="steps" aria-label="How it works">
+      <div class="step"><span class="step-num">01</span><div><strong>Make a private room</strong><small>One click, one-time code</small></div></div>
+      <div class="step"><span class="step-num">02</span><div><strong>Connect your devices</strong><small>Share the code with your peer</small></div></div>
+      <div class="step"><span class="step-num">03</span><div><strong>Send what you need</strong><small>Pick files or entire folders</small></div></div>
+    </section>
+
+    <section class="workspace">
+      <article class="card">
+        <div class="card-head"><div><div class="card-kicker">Connection</div><h2>Meet your other device</h2></div><span class="card-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="6" r="3" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="18" r="3" stroke="currentColor" stroke-width="1.7"/><path d="m8.7 10.5 6.6-3M8.7 13.5l6.6 3" stroke="currentColor" stroke-width="1.7"/></svg></span></div>
+        <div class="connection-actions">
+          <button class="primary" id="create">Create a transfer room <span aria-hidden="true">↗</span></button>
+          <div class="or">or join a room</div>
+          <div class="join-row"><input id="roomInput" type="text" placeholder="Enter room code" autocomplete="off" aria-label="Room code"><button class="secondary" id="join">Join room</button></div>
+        </div>
+        <div class="room-box"><div class="room-label">Your room code</div><div class="room-line"><div id="room">— — — — —</div><button class="icon-button" id="copyRoom" title="Copy room code" aria-label="Copy room code"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="1.7"/></svg></button></div><p class="room-hint">Only share this code with the person you want to connect.</p></div>
+      </article>
+
+      <article class="card transfer-card">
+        <div class="card-head"><div><div class="card-kicker">Transfer desk</div><h2>Choose what to send</h2></div><span class="card-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5 5 5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+        <div class="transfer-tools">
+          <label class="pick" for="filePicker"><span aria-hidden="true">＋</span> Choose files</label><input id="filePicker" type="file" multiple>
+          <label class="pick" for="folderPicker"><span aria-hidden="true">▱</span> Choose folder</label><input id="folderPicker" type="file" multiple webkitdirectory>
+          <button class="primary" id="send" disabled>Send files <span aria-hidden="true">↗</span></button>
+          <button class="secondary" id="accept" disabled>Accept incoming</button>
+        </div>
+        <div class="dropzone" id="dropzone">
+          <div><div class="drop-icon" aria-hidden="true"><svg width="27" height="27" viewBox="0 0 28 28" fill="none"><path d="M14 19V5m0 0L8.5 10.5M14 5l5.5 5.5M5 17v5a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><strong>Drop files here, or browse to choose</strong><p>Your folder structure is kept on supported browsers.</p></div>
+        </div>
+        <div id="selection">Nothing selected yet</div>
+        <ul id="files" aria-live="polite"></ul>
+        <progress id="progress" max="1" value="0" aria-label="Transfer progress"></progress>
+      </article>
+
+      <article class="card status-card">
+        <span class="status-light" id="statusLight" data-state="idle"></span>
+        <div class="status-copy"><div class="status-title">Connection status</div><div id="status" role="status" aria-live="polite">Ready when you are. Create a room or join one with a code.</div></div>
+      </article>
+    </section>
+
+    <div class="privacy-note"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.2 3.5 5v4.4c0 4 2.8 6.8 6.5 8.4 3.7-1.6 6.5-4.4 6.5-8.4V5L10 2.2Z" stroke="currentColor" stroke-width="1.4"/><path d="m7.2 10 1.8 1.8 3.8-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Prototype note: file data is sent over a direct WebRTC channel. The local signaling service only helps peers connect. This preview is not security-audited; avoid sensitive files.</span></div>
+    <footer><span>LANTERN · PRIVATE BY DESIGN</span><span>LOCAL PROTOTYPE · NOT PUBLISHED</span></footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
