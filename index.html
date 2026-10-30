@@ -4,8 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0c1012">
-  <meta name="description" content="Lantern — a private, direct way to send files and folders between devices.">
-  <title>Lantern — send files, directly</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="description" content="Lantern lets you send files and folders directly between devices. No cloud upload in the middle.">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Lantern — files go straight to each other">
+  <meta property="og:description" content="Send a file or folder directly between devices, with no cloud upload in the middle.">
+  <title>Lantern — direct file transfer</title>
   <style>
     :root {
       color-scheme: dark;
@@ -132,14 +137,14 @@
         </span>
         <span class="brand-name">lantern</span><span class="brand-tag">P2P TRANSFER</span>
       </a>
-      <div class="top-right"><span class="secure-pill"><i class="secure-dot"></i> DIRECT CONNECTION</span><span class="beta-pill">LOCAL PREVIEW</span></div>
+      <div class="top-right"><span class="secure-pill"><i class="secure-dot"></i> PEER-TO-PEER</span><span class="beta-pill" id="deploymentBadge">PUBLIC BETA</span></div>
     </header>
 
     <section class="hero">
       <div>
         <div class="eyebrow">A clearer way to share</div>
         <h1>Files go <span>straight</span><br>to each other.</h1>
-        <p class="hero-copy">Send a file, a folder, or a whole project directly between devices. No cloud upload in the middle.</p>
+        <p class="hero-copy">Send files and folders directly between devices. Lantern helps the devices meet; your file data travels over an encrypted peer-to-peer connection when the network allows it.</p>
       </div>
       <div class="hero-art" aria-hidden="true"><div class="halo"></div><svg viewBox="0 0 210 190" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M87 39h36l11 17v72l-29 25-29-25V56l11-17Z" fill="#18201A" stroke="#D3F17A" stroke-width="3"/><path d="M93 39v-9h24v9M76 61h58M82 119h46" stroke="#D3F17A" stroke-width="3" stroke-linecap="round"/><path d="M105 67v43m-14-27 14-14 14 14" stroke="#ED9A61" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M47 95H20m170 0h-27M105 17V4" stroke="#ED9A61" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="95" r="4" fill="#D3F17A"/><circle cx="190" cy="95" r="4" fill="#D3F17A"/><path d="M42 84c9-8 19-12 29-13M168 84c-9-8-19-12-29-13" stroke="#71814D" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 6"/></svg></div>
     </section>
@@ -183,8 +188,8 @@
       </article>
     </section>
 
-    <div class="privacy-note"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.2 3.5 5v4.4c0 4 2.8 6.8 6.5 8.4 3.7-1.6 6.5-4.4 6.5-8.4V5L10 2.2Z" stroke="currentColor" stroke-width="1.4"/><path d="m7.2 10 1.8 1.8 3.8-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Prototype: files travel over a direct WebRTC data channel, but Google STUN is contacted to help establish connectivity and may see your public IP. The local signaling server does not relay file data. Not security-audited; do not send sensitive files.</span></div>
-    <footer><span>LANTERN · DIRECT BY DESIGN</span><span>LOCAL PROTOTYPE · SELF-HOSTED</span></footer>
+    <div class="privacy-note"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.2 3.5 5v4.4c0 4 2.8 6.8 6.5 8.4 3.7-1.6 6.5-4.4 6.5-8.4V5L10 2.2Z" stroke="currentColor" stroke-width="1.4"/><path d="m7.2 10 1.8 1.8 3.8-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Public beta: Lantern's server handles temporary room codes and WebRTC setup only; file contents are sent directly between peers over WebRTC encryption. Google STUN may see your public IP address, and some networks may block direct connections. Room state is temporary and can reset during a restart. This service is not security-audited—avoid sensitive files.</span></div>
+    <footer><span>LANTERN · DIRECT BY DESIGN</span><span><a href="https://github.com/lantern-p2p/lantern" target="_blank" rel="noopener noreferrer" style="color:inherit">OPEN SOURCE ON GITHUB ↗</a> · PUBLIC BETA</span></footer>
   </div>
   <script src="app.js"></script>
 </body>

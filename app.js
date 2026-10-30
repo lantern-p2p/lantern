@@ -11,6 +11,10 @@ const status = (text) => {
 };
 let socket, pc, channel, isInitiator = false, isSending = false, files = [], incoming = null, pending = [];
 
+if (['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)) {
+  $('deploymentBadge').textContent = 'LOCAL PREVIEW';
+}
+
 function updateControls() {
   const connected = channel?.readyState === 'open';
   $('send').disabled = !connected || !files.length || isSending;
@@ -20,10 +24,12 @@ function updateControls() {
 function connect() {
   if (socket && socket.readyState === WebSocket.OPEN) return Promise.resolve();
   return new Promise((resolve, reject) => {
-    const nextSocket = new WebSocket(`ws://${location.hostname}:8766`);
+    const signalingUrl = new URL('/ws', window.location.href);
+    signalingUrl.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const nextSocket = new WebSocket(signalingUrl);
     socket = nextSocket;
     nextSocket.onopen = resolve;
-    nextSocket.onerror = () => reject(new Error('Could not connect to local signaling server.'));
+    nextSocket.onerror = () => reject(new Error('Could not connect to Lantern signaling. Check your connection and try again.'));
     nextSocket.onmessage = (event) => onSignal(JSON.parse(event.data));
     nextSocket.onclose = () => {
       if (socket !== nextSocket) return;
