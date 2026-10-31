@@ -58,7 +58,11 @@ directly to the internet without a TLS-terminating host and its safety limits.
 
 The desktop client is an Electron shell around the same hosted Lantern web app.
 It does not duplicate the transfer implementation or run a separate signaling
-server. It needs internet access and the deployed service URL.
+server. It needs internet access and the deployed service URL. Because the app
+loads the hosted site directly, website design and interface improvements appear
+in the desktop app automatically after the site deploys; rebuilding the Windows
+installer is not required for web-only changes. Use `Ctrl+R` in the app to
+reload the page if it was already open during a deployment.
 
 ```powershell
 cd desktop

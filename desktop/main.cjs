@@ -31,8 +31,8 @@ function createWindow() {
     minHeight: 620,
     show: false,
     autoHideMenuBar: true,
-    backgroundColor: '#0c1012',
-    title: 'Lantern — direct file transfer',
+    backgroundColor: '#080b0b',
+    title: 'Lantern — peer-to-peer file transfer',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

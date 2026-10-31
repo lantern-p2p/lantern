@@ -3,193 +3,282 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0c1012">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta name="description" content="Lantern lets you send files and folders directly between devices. No cloud upload in the middle.">
+  <meta name="theme-color" content="#080b0b">
+  <meta name="description" content="Lantern helps you send files directly between devices, without uploading them to a cloud inbox.">
   <meta name="color-scheme" content="dark">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Lantern — files go straight to each other">
-  <meta property="og:description" content="Send a file or folder directly between devices, with no cloud upload in the middle.">
-  <title>Lantern — direct file transfer</title>
+  <meta property="og:title" content="Lantern — share files, simply">
+  <meta property="og:description" content="Send files and folders directly between devices. No account or cloud upload required.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <title>Lantern — share files, simply</title>
   <style>
     :root {
       color-scheme: dark;
-      --bg: #0c1012;
-      --panel: #121819;
-      --panel-raised: #171f20;
-      --line: #263131;
-      --line-soft: #202929;
-      --text: #f1f1e9;
-      --muted: #899492;
-      --faint: #5e6b68;
-      --lime: #d3f17a;
-      --lime-dark: #9cb84e;
-      --orange: #ed9a61;
-      font: 15px/1.5 'Segoe UI', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-synthesis: none;
+      --paper:#080b0b; --surface:#101515; --surface-blue:#151d1b; --ink:#f1f2eb;
+      --muted:#a1aaa5; --faint:#75817a; --line:#293330; --blue:#d1f37a;
+      --blue-hover:#e2ff91; --blue-soft:#1c2818; --mint:#bde9d6; --orange:#f39b67;
+      font:15px/1.55 Inter,'Segoe UI Variable','Segoe UI',system-ui,sans-serif;
+      background:var(--paper); color:var(--ink); font-synthesis:none; text-rendering:optimizeLegibility;
     }
     * { box-sizing: border-box }
+    html { scroll-behavior: smooth }
     body {
       margin: 0;
-      min-height: 100vh;
-      background:
-        radial-gradient(ellipse at 78% 0%, #29312355 0, transparent 34rem),
-        radial-gradient(ellipse at 0% 38%, #13252244 0, transparent 28rem),
-        var(--bg);
+      min-width: 320px;
+      background:radial-gradient(ellipse at 82% 7%,#a5d94b12 0,transparent 32rem),#080b0b;
     }
     button, input { font: inherit }
     button { color: inherit }
-    .shell { width: min(1140px, calc(100% - 48px)); margin: 0 auto; padding: 26px 0 38px }
-    .topbar { height: 54px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ffffff12; padding-bottom: 18px }
-    .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--text) }
-    .brand-mark { width: 32px; height: 36px; display: grid; place-items: center }
-    .brand-name { font: 800 19px/1 'Segoe UI', system-ui, sans-serif; letter-spacing: -.06em }
-    .brand-tag { color: var(--muted); font: 10px Consolas, monospace; letter-spacing: .16em; margin-left: 8px }
-    .top-right { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px }
-    .secure-pill, .beta-pill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; background:#111716aa }
-    .secure-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 12px #d3f17a88 }
-    .hero { display: grid; grid-template-columns: 1fr 360px; gap: 42px; align-items: center; padding: 70px 0 53px }
-    .eyebrow { color: var(--lime); font: 11px Consolas, monospace; text-transform: uppercase; letter-spacing: .17em; display: flex; align-items: center; gap: 10px }
-    .eyebrow::before { content: ''; width: 23px; height: 1px; background: var(--lime) }
-    h1 { font: 700 clamp(42px, 6vw, 68px)/1.04 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif; letter-spacing: -.07em; margin: 18px 0 17px; max-width: 660px }
-    h1 span { color: var(--lime) }
-    .hero-copy { color: #a4aeaa; font-size: 16px; max-width: 530px; margin: 0 }
-    .hero-art { min-height: 195px; display: grid; place-items: center; position: relative; isolation: isolate }
-    .halo { position:absolute; width:210px; height:160px; border-radius:50%; background:#d3f17a12; filter:blur(35px); z-index:-1 }
-    .hero-art svg { width: 190px; filter: drop-shadow(0 12px 34px #d3f17a25) }
-    .steps { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); background: #111716a8; border-radius: 15px; margin-bottom: 20px; overflow: hidden }
-    .step { display:flex; align-items:center; gap:13px; padding:15px 19px; min-height:69px }
-    .step + .step { border-left:1px solid var(--line) }
-    .step-num { color:var(--lime); font:11px Consolas,monospace; border:1px solid #d3f17a40; border-radius:8px; width:30px; height:30px; display:grid; place-items:center; flex:none }
-    .step strong { display:block; font-size:12px; font-weight:600 }
-    .step small { display:block; color:var(--muted); font-size:11px; margin-top:2px }
-    .workspace { display:grid; grid-template-columns: .88fr 1.12fr; gap:16px }
-    .card { border:1px solid var(--line); border-radius:15px; background:linear-gradient(145deg,#151c1d,#111616); padding:21px; min-width:0 }
-    .card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:17px }
-    .card-kicker { color:var(--muted); font:10px Consolas,monospace; text-transform:uppercase; letter-spacing:.14em }
-    h2 { font:650 19px 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif; letter-spacing:-.04em; margin:4px 0 0 }
-    .card-icon { width:34px;height:34px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;color:var(--lime);background:#d3f17a08 }
-    .connection-actions { display:flex; flex-direction:column; gap:10px }
-    .primary, .secondary, .icon-button, .pick {
-      border:1px solid transparent; border-radius:9px; min-height:43px; padding:10px 13px; cursor:pointer; transition:background .16s,border-color .16s,transform .16s;
-    }
-    .primary { background:var(--lime); color:#14190c; font-weight:700; box-shadow:0 5px 22px #d3f17a1a }
-    .primary:hover:not(:disabled) { background:#e2ff90; transform:translateY(-1px) }
-    .secondary,.pick { background:#1a2323; border-color:#303c3b; color:#e5e9df }
-    .secondary:hover:not(:disabled),.pick:hover { background:#222e2c; border-color:#566755 }
-    .primary:disabled,.secondary:disabled { opacity:.42; cursor:not-allowed }
-    .or { display:flex;align-items:center;gap:10px;color:var(--faint);font:10px Consolas,monospace;text-transform:uppercase;letter-spacing:.1em }
-    .or::before,.or::after { content:'';height:1px;background:var(--line-soft);flex:1 }
+    a { color: inherit }
+    :focus-visible { outline:3px solid var(--blue); outline-offset:3px }
+    .shell { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 20px 0 50px }
+    .topbar { min-height:58px; display:flex; align-items:center; justify-content:space-between; gap:20px; border-bottom:1px solid #ffffff14 }
+    .brand { display:flex; align-items:center; gap:10px; color:var(--ink); text-decoration:none; flex:none }
+    .brand-mark { width:34px; height:38px; display:grid; place-items:center }
+    .brand-mark svg { width:31px; height:35px }
+    .brand-name { font-size:20px; font-weight:780; letter-spacing:-.065em }
+    .brand-tag { color:var(--muted); font-size:10px; font-weight:650; letter-spacing:.15em; margin-left:7px }
+    .nav { display:flex; align-items:center; gap:27px; color:var(--muted); font-size:12px; font-weight:600 }
+    .nav a { text-decoration:none; transition:color .16s }
+    .nav a:hover { color:var(--blue) }
+    .nav .github { color:var(--ink) }
+    .top-status { display:inline-flex; align-items:center; gap:8px; padding:7px 11px; border:1px solid #35413a; border-radius:999px; background:#111816; color:#d2ddcc; font-size:10px; font-weight:750; letter-spacing:.09em; white-space:nowrap }
+    .top-status i { width:7px; height:7px; border-radius:50%; background:var(--blue); box-shadow:0 0 12px #d1f37a88 }
+    .hero { display:grid; grid-template-columns:1.12fr .88fr; gap:30px; align-items:center; padding:48px 0 29px }
+    .eyebrow { display:flex; align-items:center; gap:9px; color:var(--blue); font-size:10px; font-weight:800; letter-spacing:.16em; text-transform:uppercase }
+    .eyebrow::before { content:''; width:20px; height:2px; border-radius:2px; background:var(--blue) }
+    h1 { max-width:680px; margin:15px 0; font:760 clamp(48px,6.1vw,72px)/.99 'Segoe UI Variable Display','Segoe UI',system-ui,sans-serif; letter-spacing:-.075em }
+    h1 span { color:var(--blue) }
+    .hero-copy { max-width:560px; margin:0; color:#a7b1ac; font-size:15px; line-height:1.72 }
+    .hero-points { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px }
+    .hero-points span { padding:6px 9px; border:1px solid #293432; border-radius:7px; background:#101615; color:#aab5ae; font-size:10px; font-weight:600 }
+    .hero-visual { min-height:222px; position:relative; display:grid; place-items:center; overflow:hidden; border:1px solid #28332d; border-radius:18px; background:radial-gradient(ellipse at 50% 43%,#b7e86214,transparent 56%),linear-gradient(145deg,#111817,#0d1212); box-shadow:0 24px 65px #0005 }
+    .visual-grid { position:absolute; inset:0; opacity:.2; background-image:linear-gradient(#d3f17a16 1px,transparent 1px),linear-gradient(90deg,#d3f17a16 1px,transparent 1px); background-size:28px 28px; mask-image:radial-gradient(ellipse at center,#000 0,transparent 75%) }
+    .visual-glow { position:absolute; width:220px; height:150px; border-radius:50%; background:#b3e75a22; filter:blur(48px) }
+    .network { position:relative; width:min(380px,92%); height:210px }
+    .network-line { position:absolute; left:65px; right:65px; top:103px; height:1px; background:linear-gradient(90deg,#536044,#d1f37a 50%,#536044) }
+    .network-line::before,.network-line::after { content:''; position:absolute; top:-4px; width:9px; height:9px; border-radius:50%; background:#d1f37a; box-shadow:0 0 0 6px #d1f37a19 }
+    .network-line::before { left:25% }.network-line::after { right:25% }
+    .device { position:absolute; top:57px; width:92px; height:95px; display:grid; place-items:center; border:1px solid #39443d; border-radius:17px; background:linear-gradient(145deg,#1a2320,#111716); box-shadow:0 12px 26px #0005 }
+    .device.left { left:18px }.device.right { right:18px }
+    .device svg { width:39px; height:39px; color:var(--blue) }
+    .device-label { position:absolute; top:161px; color:#9aa69d; font-size:9px; font-weight:700; letter-spacing:.13em; text-transform:uppercase }
+    .device-label.left { left:26px }.device-label.right { right:22px }
+    .packet { position:absolute; z-index:2; left:calc(50% - 18px); top:86px; width:36px; height:36px; display:grid; place-items:center; border:1px solid #5a6746; border-radius:11px; background:#d1f37a; color:#17200e; box-shadow:0 0 24px #d1f37a33; font-size:16px; font-weight:800; animation:packetTravel 3.2s ease-in-out infinite }
+    @keyframes packetTravel { 0%,100% { transform:translateX(-9px) } 50% { transform:translateX(9px) } }
+    .visual-caption { position:absolute; bottom:17px; left:0; right:0; text-align:center; color:#87948a; font-size:10px }
+    .workspace { display:grid; grid-template-columns:.88fr 1.12fr; gap:14px; scroll-margin-top:20px }
+    .card { min-width:0; padding:22px; border:1px solid #2a3532; border-radius:15px; background:linear-gradient(145deg,#151d1b,#101515); box-shadow:0 18px 45px #0003 }
+    .card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:18px }
+    .card-kicker { color:#96a39b; font:700 9px ui-monospace,Consolas,monospace; letter-spacing:.16em }
+    h2 { margin:4px 0 0; font-size:20px; line-height:1.25; letter-spacing:-.045em; font-weight:720 }
+    .card-icon { width:36px; height:36px; flex:none; display:grid; place-items:center; border:1px solid #3b4639; border-radius:10px; background:#1b2419; color:var(--blue) }
+    .connection-actions { display:flex; flex-direction:column; gap:11px }
+    .primary,.secondary,.icon-button,.pick { min-height:43px; padding:10px 13px; border:1px solid transparent; border-radius:9px; cursor:pointer; transition:background .16s,border-color .16s,transform .16s,box-shadow .16s }
+    .primary { background:var(--blue); color:#151a0e; font-weight:700; box-shadow:0 6px 20px #d1f37a19 }
+    .primary:hover:not(:disabled) { background:var(--blue-hover); transform:translateY(-1px); box-shadow:0 9px 24px #d1f37a2b }
+    .secondary,.pick { border-color:#3a4641; background:#18201e; color:#e0e7dd; font-weight:600 }
+    .secondary:hover:not(:disabled),.pick:hover { border-color:#68784f; background:#1e2921 }
+    .primary:disabled,.secondary:disabled { opacity:.46; cursor:not-allowed; box-shadow:none }
+    .or { display:flex; align-items:center; gap:10px; color:#75817b; font-size:9px; font-weight:700; letter-spacing:.13em; text-transform:uppercase }
+    .or::before,.or::after { content:''; height:1px; flex:1; background:#293432 }
     .join-row { display:flex; gap:8px }
-    input[type=text] { min-width:0; width:100%; border:1px solid #303c3b; border-radius:9px; background:#0f1515; color:var(--text); padding:10px 12px; outline:none; font:13px Consolas,monospace; letter-spacing:.03em }
-    input[type=text]:focus { border-color:var(--lime-dark); box-shadow:0 0 0 3px #d3f17a12 }
+    input[type=text] { min-width:0; width:100%; border:1px solid #394541; border-radius:9px; background:#0d1312; color:#eff2e9; padding:10px 12px; outline:none; font:13px ui-monospace,Consolas,monospace; letter-spacing:.025em }
+    input[type=text]:focus { border-color:#9cb84e; box-shadow:0 0 0 3px #d1f37a16 }
     .join-row .secondary { flex:none }
-    .room-box { margin-top:16px; border:1px dashed #384643; border-radius:11px; padding:13px 14px; background:#0d1312 }
-    .room-label { color:var(--muted);font:10px Consolas,monospace;text-transform:uppercase;letter-spacing:.1em }
-    .room-line { display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px }
-    #room { color:var(--lime);font:600 21px Consolas,monospace;letter-spacing:.1em;word-break:break-all }
-    .icon-button { min-height:34px;padding:6px 9px;background:#19211f;border-color:#303c3b;color:#c4cec8;display:grid;place-items:center }
-    .icon-button:hover { border-color:#67795a;color:var(--lime) }
-    .room-hint { color:var(--faint);font-size:11px;margin:7px 0 0 }
-    .transfer-card { grid-row:span 2 }
-    .transfer-tools { display:flex;gap:8px;align-items:center;flex-wrap:wrap }
-    .pick { display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;min-height:39px;padding:8px 11px }
-    input[type=file] { position:absolute;width:1px;height:1px;opacity:0;pointer-events:none }
-    #send { min-height:39px;margin-left:auto;padding:8px 13px }
-    #accept { min-height:39px;padding:8px 13px }
-    .dropzone { border:1px dashed #394746;border-radius:12px;min-height:140px;margin-top:14px;display:grid;place-items:center;text-align:center;padding:18px;background:radial-gradient(ellipse at center,#d3f17a08,transparent 65%);transition:border .2s,background .2s }
-    .dropzone.drag { border-color:var(--lime);background:#d3f17a12 }
-    .drop-icon { color:var(--lime);margin-bottom:6px }
-    .dropzone strong { display:block;font-size:13px;font-weight:600 }
-    .dropzone p { color:var(--muted);font-size:11px;margin:3px 0 0 }
-    #selection { color:var(--muted);font-size:11px;margin-top:13px }
-    #files { list-style:none;margin:8px 0 0;padding:0;max-height:150px;overflow:auto }
+    .room-box { margin-top:16px; padding:13px 14px; border:1px dashed #465140; border-radius:11px; background:#0d1311 }
+    .room-label { color:#9ba79e; font-size:9px; font-weight:800; letter-spacing:.13em; text-transform:uppercase }
+    .room-line { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:3px }
+    #room { color:var(--blue); font:700 21px ui-monospace,Consolas,monospace; letter-spacing:.09em; overflow-wrap:anywhere }
+    .icon-button { min-height:35px; padding:6px 9px; display:grid; place-items:center; border-color:#3a4641; background:#171f1d; color:#c4cec7 }
+    .icon-button:hover { border-color:#7b8d58; color:var(--blue) }
+    .room-hint { margin:7px 0 0; color:#88948c; font-size:10px }
+    .transfer-tools { display:flex; align-items:center; flex-wrap:wrap; gap:8px }
+    .pick { min-height:39px; display:inline-flex; align-items:center; gap:7px; padding:8px 11px; font-size:11px }
+    input[type=file] { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none }
+    #send { min-height:39px; margin-left:auto; padding:8px 13px; font-size:11px }
+    #accept { min-height:39px; padding:8px 12px; font-size:11px }
+    .dropzone { min-height:144px; margin-top:14px; display:grid; place-items:center; padding:18px; border:1px dashed #46534b; border-radius:12px; background:radial-gradient(ellipse at center,#d1f37a0b,transparent 70%),#0d1312; text-align:center; transition:border-color .2s,background .2s }
+    .dropzone.drag { border-color:var(--blue); background:#d1f37a12 }
+    .drop-icon { margin-bottom:6px; color:var(--blue) }
+    .dropzone strong { display:block; color:#e8ede4; font-size:12px; font-weight:700 }
+    .dropzone p { margin:4px 0 0; color:#909c94; font-size:10px }
+    #selection { margin-top:12px; color:#a1aca7; font-size:10px }
+    #files { max-height:142px; overflow:auto; list-style:none; margin:7px 0 0; padding:0 }
     #files:empty { display:none }
-    #files li { display:flex;align-items:center;gap:9px;padding:9px 2px;border-bottom:1px solid var(--line-soft);font-size:11px;color:#c7d0ca;overflow-wrap:anywhere }
-    #files li::before { content:'';width:7px;height:9px;border:1px solid #839188;border-radius:2px;flex:none }
-    #progress { display:block;width:100%;height:4px;margin-top:12px;border:0;border-radius:99px;overflow:hidden;background:#26302e }
-    #progress::-webkit-progress-bar { background:#26302e }
-    #progress::-webkit-progress-value { background:var(--lime);border-radius:99px }
-    #progress::-moz-progress-bar { background:var(--lime);border-radius:99px }
-    .status-card { display:flex;align-items:flex-start;gap:11px;padding:14px 16px }
-    .status-light { width:8px;height:8px;border-radius:50%;background:#77817e;margin-top:6px;flex:none }
+    #files li { display:flex; align-items:center; gap:9px; overflow-wrap:anywhere; padding:8px 2px; border-bottom:1px solid #26312e; color:#c5cec7; font-size:10px }
+    #files li::before { content:''; width:7px; height:9px; flex:none; border:1px solid #9ba89f; border-radius:2px }
+    #progress { display:block; width:100%; height:5px; margin-top:12px; overflow:hidden; border:0; border-radius:99px; background:#293432 }
+    #progress::-webkit-progress-bar { background:#293432 }
+    #progress::-webkit-progress-value { border-radius:99px; background:var(--blue) }
+    #progress::-moz-progress-bar { border-radius:99px; background:var(--blue) }
+    .status-card { grid-column:1; display:flex; align-items:flex-start; gap:11px; padding:14px 16px; background:#111817 }
+    .status-light { width:8px; height:8px; flex:none; margin-top:6px; border-radius:50%; background:#68736e }
+    .status-light[data-state="online"] { background:#d1f37a; box-shadow:0 0 11px #d1f37a77 }
+    .status-light[data-state="error"] { background:#ff786c; box-shadow:0 0 11px #ff786c77 }
     .status-copy { min-width:0 }
-    .status-title { color:#dfe6dd;font-size:12px;font-weight:600 }
-    #status { color:var(--muted);font-size:11px;margin-top:2px;min-height:1.4em }
-    .status-light[data-state="online"] { background:var(--lime);box-shadow:0 0 11px #d3f17a88 }
-    .status-light[data-state="error"] { background:#ff786c;box-shadow:0 0 11px #ff786c88 }
-    .privacy-note { display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:11px;padding:17px 2px 0 }
-    .privacy-note svg { flex:none;color:var(--lime);margin-top:1px }
-    footer { border-top:1px solid #ffffff12;margin-top:35px;padding-top:17px;display:flex;justify-content:space-between;gap:16px;color:var(--faint);font:10px Consolas,monospace;letter-spacing:.03em }
-    @media(max-width:760px) { .hero{grid-template-columns:1fr;padding:52px 0 36px;gap:10px}.hero-art{display:none}.workspace{grid-template-columns:1fr}.transfer-card{grid-row:auto}.steps{grid-template-columns:1fr}.step + .step{border-left:0;border-top:1px solid var(--line)} }
-    @media(max-width:480px) { .shell{width:calc(100% - 28px);padding-top:16px}.brand-tag,.secure-pill{display:none}.topbar{height:45px}.hero{padding-top:43px}.card{padding:16px}.transfer-tools{display:grid;grid-template-columns:1fr 1fr}.transfer-tools .primary{grid-column:1/-1;margin:0}.join-row{flex-direction:column}.join-row .secondary{width:100%}footer{flex-direction:column} }
-    @media(prefers-reduced-motion:reduce) { *,*::before,*::after{scroll-behavior:auto!important;transition:none!important} }
+    .status-title { color:#e1e8de; font-size:11px; font-weight:750 }
+    #status { min-height:1.45em; margin-top:2px; color:#9aa69e; font-size:10px }
+    .micro-note { display:flex; align-items:center; gap:7px; margin-top:12px; color:#929e95; font-size:10px }
+    .micro-note svg { flex:none; color:var(--blue) }
+    .section { padding-top:55px; scroll-margin-top:20px }
+    .section-heading { max-width:620px; margin:0 auto 22px; text-align:center }
+    .section-heading .eyebrow { justify-content:center }
+    .section-heading .eyebrow::after { content:''; width:20px; height:2px; border-radius:2px; background:var(--blue) }
+    h2.section-title { margin:10px 0 8px; color:#edf0e8; font-size:clamp(28px,4vw,40px); letter-spacing:-.06em }
+    .section-intro { margin:0; color:#9ba79f; font-size:13px }
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:12px }
+    .step { min-height:142px; padding:19px; border:1px solid #293432; border-radius:13px; background:#111817 }
+    .step-num { width:29px; height:29px; display:grid; place-items:center; border-radius:8px; background:#202b19; color:var(--blue); font-size:10px; font-weight:800 }
+    .step h3,.info-card h3 { margin:14px 0 5px; color:#e5eae1; font-size:14px; letter-spacing:-.02em }
+    .step p,.info-card p { margin:0; color:#98a49c; font-size:11px; line-height:1.65 }
+    .privacy-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:13px }
+    .info-card { padding:20px; border:1px solid #293432; border-radius:13px; background:#111817 }
+    .info-card .info-icon { width:32px; height:32px; display:grid; place-items:center; border-radius:10px; background:#202b19; color:var(--blue) }
+    .info-card h3 { margin-top:12px }
+    .beta-callout { margin-top:13px; padding:14px 16px; border:1px solid #514331; border-radius:11px; background:#191712; color:#c0ad93; font-size:10px; line-height:1.7 }
+    .beta-callout strong { color:#edc69c }
+    .faq-list { display:grid; grid-template-columns:repeat(3,1fr); gap:12px }
+    .faq-card { padding:17px; border:1px solid #293432; border-radius:13px; background:#111817 }
+    .faq-card h3 { margin:0 0 7px; color:#e5eae1; font-size:12px }
+    .faq-card p { margin:0; color:#98a49c; font-size:10px; line-height:1.7 }
+    .bottom-cta { margin-top:45px; padding:23px 25px; display:flex; align-items:center; justify-content:space-between; gap:20px; border:1px solid #354238; border-radius:14px; background:linear-gradient(110deg,#151d18,#171d17 65%,#151918) }
+    .bottom-cta strong { display:block; color:#e8ede4; font-size:15px; letter-spacing:-.02em }
+    .bottom-cta span { color:#a1aca7; font-size:11px }
+    .bottom-cta a { flex:none; color:var(--blue); font-size:11px; font-weight:750; text-decoration:none }
+    footer { margin-top:36px; padding-top:17px; display:flex; justify-content:space-between; gap:16px; border-top:1px solid #ffffff16; color:#829087; font-size:9px; font-weight:650; letter-spacing:.08em }
+    footer a { color:inherit; text-decoration:none }
+    footer a:hover { color:var(--blue) }
+    @media(max-width:780px) {
+      .hero { grid-template-columns:1fr .72fr; gap:18px; padding-top:40px }
+      .hero-visual { min-height:210px }
+      .workspace { grid-template-columns:1fr 1fr }
+      .transfer-card { grid-column:2; grid-row:1 / span 2 }
+      .status-card { grid-column:1 }
+      .privacy-grid { grid-template-columns:1fr }
+      .steps,.faq-list { grid-template-columns:1fr }
+      .step { min-height:0 }
+    }
+    @media(max-width:600px) {
+      .shell { width:calc(100% - 28px); padding-top:12px }
+      .topbar { min-height:50px; gap:10px }
+      .brand-tag,.nav a:nth-child(2) { display:none }
+      .nav { gap:14px; font-size:11px }
+      .top-status { padding:6px 8px; font-size:8px }
+      .hero { grid-template-columns:1fr; padding:34px 0 20px }
+      h1 { max-width:500px; font-size:clamp(43px,13vw,62px) }
+      .hero-copy { font-size:14px }
+      .hero-visual { min-height:185px; margin-top:2px }
+      .network { transform:scale(.86) }
+      .workspace { grid-template-columns:1fr; gap:10px }
+      .transfer-card { grid-column:auto; grid-row:auto }
+      .status-card { grid-column:auto }
+      .card { padding:17px }
+      .transfer-tools { display:grid; grid-template-columns:1fr 1fr }
+      .transfer-tools .primary { grid-column:1/-1; margin:0 }
+      .join-row { flex-direction:column }
+      .join-row .secondary { width:100% }
+      .section { padding-top:43px }
+      .privacy-grid { grid-template-columns:1fr }
+      .bottom-cta { align-items:flex-start; flex-direction:column; margin-top:40px; padding:19px }
+      footer { flex-direction:column; gap:8px }
+    }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; animation:none!important; transition:none!important } }
   </style>
 </head>
 <body>
   <div class="shell">
     <header class="topbar">
-      <a class="brand" href="#" aria-label="Lantern home">
+      <a class="brand" href="#top" aria-label="Lantern home">
         <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 8h12l3 5v17l-9 8-9-8V13l3-5Z" stroke="#D3F17A" stroke-width="2"/><path d="M16 8V5h8v3M11 15h18M14 30h12" stroke="#D3F17A" stroke-width="2" stroke-linecap="round"/><path d="M20 16v11m-4-7 4-4 4 4" stroke="#ED9A61" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 22H4m32 0h-4M20 2V0" stroke="#ED9A61" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 8h12l3 5v17l-9 8-9-8V13l3-5Z" stroke="#D1F37A" stroke-width="2"/><path d="M16 8V5h8v3M11 15h18M14 30h12" stroke="#D1F37A" stroke-width="2" stroke-linecap="round"/><path d="M20 16v11m-4-7 4-4 4 4" stroke="#F39B67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 22H4m32 0h-4M20 2V0" stroke="#F39B67" stroke-width="1.5" stroke-linecap="round"/></svg>
         </span>
-        <span class="brand-name">lantern</span><span class="brand-tag">P2P TRANSFER</span>
+        <span class="brand-name">lantern</span><span class="brand-tag">FILE TRANSFER</span>
       </a>
-      <div class="top-right"><span class="secure-pill"><i class="secure-dot"></i> PEER-TO-PEER</span><span class="beta-pill" id="deploymentBadge">PUBLIC BETA</span></div>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#transfer">Transfer</a><a href="#privacy">Privacy</a><a class="github" href="https://github.com/lantern-p2p/lantern" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      </nav>
+      <span class="top-status"><i aria-hidden="true"></i><span id="deploymentBadge">PUBLIC BETA</span></span>
     </header>
 
-    <section class="hero">
-      <div>
-        <div class="eyebrow">A clearer way to share</div>
-        <h1>Files go <span>straight</span><br>to each other.</h1>
-        <p class="hero-copy">Send files and folders directly between devices. Lantern helps the devices meet; your file data travels over an encrypted peer-to-peer connection when the network allows it.</p>
-      </div>
-      <div class="hero-art" aria-hidden="true"><div class="halo"></div><svg viewBox="0 0 210 190" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M87 39h36l11 17v72l-29 25-29-25V56l11-17Z" fill="#18201A" stroke="#D3F17A" stroke-width="3"/><path d="M93 39v-9h24v9M76 61h58M82 119h46" stroke="#D3F17A" stroke-width="3" stroke-linecap="round"/><path d="M105 67v43m-14-27 14-14 14 14" stroke="#ED9A61" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M47 95H20m170 0h-27M105 17V4" stroke="#ED9A61" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="95" r="4" fill="#D3F17A"/><circle cx="190" cy="95" r="4" fill="#D3F17A"/><path d="M42 84c9-8 19-12 29-13M168 84c-9-8-19-12-29-13" stroke="#71814D" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 6"/></svg></div>
-    </section>
-
-    <section class="steps" aria-label="How it works">
-      <div class="step"><span class="step-num">01</span><div><strong>Make a private room</strong><small>One click, one-time code</small></div></div>
-      <div class="step"><span class="step-num">02</span><div><strong>Connect your devices</strong><small>Share the code with your peer</small></div></div>
-      <div class="step"><span class="step-num">03</span><div><strong>Send what you need</strong><small>Pick files or entire folders</small></div></div>
-    </section>
-
-    <section class="workspace">
-      <article class="card">
-        <div class="card-head"><div><div class="card-kicker">Connection</div><h2>Meet your other device</h2></div><span class="card-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="6" r="3" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="18" r="3" stroke="currentColor" stroke-width="1.7"/><path d="m8.7 10.5 6.6-3M8.7 13.5l6.6 3" stroke="currentColor" stroke-width="1.7"/></svg></span></div>
-        <div class="connection-actions">
-          <button class="primary" id="create">Create a transfer room <span aria-hidden="true">↗</span></button>
-          <div class="or">or join a room</div>
-          <div class="join-row"><input id="roomInput" type="text" placeholder="Enter room code" autocomplete="off" aria-label="Room code"><button class="secondary" id="join">Join room</button></div>
+    <main id="top">
+      <section class="hero" aria-labelledby="heroTitle">
+        <div>
+          <div class="eyebrow">Private file transfer · Public beta</div>
+          <h1 id="heroTitle">Your files.<br><span>Point to point.</span></h1>
+          <p class="hero-copy">Send files straight between your devices. Lantern coordinates the connection; file data travels through WebRTC, not a cloud inbox.</p>
+          <div class="hero-points"><span>No account or upload</span><span>Encrypted WebRTC</span></div>
         </div>
-        <div class="room-box"><div class="room-label">Your room code</div><div class="room-line"><div id="room">— — — — —</div><button class="icon-button" id="copyRoom" title="Copy room code" aria-label="Copy room code"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="1.7"/></svg></button></div><p class="room-hint">Only share this code with the person you want to connect.</p></div>
-      </article>
-
-      <article class="card transfer-card">
-        <div class="card-head"><div><div class="card-kicker">Transfer desk</div><h2>Choose what to send</h2></div><span class="card-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5 5 5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <div class="transfer-tools">
-          <label class="pick" for="filePicker"><span aria-hidden="true">＋</span> Choose files</label><input id="filePicker" type="file" multiple>
-          <label class="pick" for="folderPicker"><span aria-hidden="true">▱</span> Choose folder</label><input id="folderPicker" type="file" multiple webkitdirectory>
-          <button class="primary" id="send" disabled>Send files <span aria-hidden="true">↗</span></button>
-          <button class="secondary" id="accept" disabled>Accept incoming</button>
+        <div class="hero-visual" aria-label="Illustration of a direct transfer between two devices">
+          <div class="visual-grid"></div><div class="visual-glow"></div>
+          <div class="network" aria-hidden="true">
+            <div class="network-line"></div>
+            <div class="device left"><svg viewBox="0 0 32 32" fill="none"><rect x="7" y="3" width="18" height="26" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M12 7h8M14 25h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+            <div class="device right"><svg viewBox="0 0 32 32" fill="none"><rect x="4" y="5" width="24" height="17" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M12 27h8m-4-5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+            <div class="packet">↗</div><div class="device-label left">Your device</div><div class="device-label right">Their device</div>
+          </div>
+          <div class="visual-caption">DIRECT CONNECTION · YOUR DEVICES STAY IN CONTROL</div>
         </div>
-        <div class="dropzone" id="dropzone">
-          <div><div class="drop-icon" aria-hidden="true"><svg width="27" height="27" viewBox="0 0 28 28" fill="none"><path d="M14 19V5m0 0L8.5 10.5M14 5l5.5 5.5M5 17v5a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><strong>Drop files here, or browse to choose</strong><p>Your folder structure is kept on supported browsers.</p></div>
+      </section>
+
+      <section class="workspace" id="transfer" aria-label="Start or join a transfer">
+        <article class="card">
+          <div class="card-head"><div><div class="card-kicker">01 / CONNECT DEVICES</div><h2>Open a transfer room</h2></div><span class="card-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="6" r="3" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="18" r="3" stroke="currentColor" stroke-width="1.7"/><path d="m8.7 10.5 6.6-3M8.7 13.5l6.6 3" stroke="currentColor" stroke-width="1.7"/></svg></span></div>
+          <div class="connection-actions">
+            <button class="primary" id="create">Create a private room <span aria-hidden="true">↗</span></button>
+            <div class="or">or join with a code</div>
+            <div class="join-row"><input id="roomInput" type="text" placeholder="Paste the room code" autocomplete="off" aria-label="Room code"><button class="secondary" id="join">Join room</button></div>
+          </div>
+          <div class="room-box"><div class="room-label">Your private room code</div><div class="room-line"><div id="room">— — — — —</div><button class="icon-button" id="copyRoom" title="Copy room code" aria-label="Copy room code"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="1.7"/></svg></button></div><p class="room-hint">Share this one-time code only with the person you intend to connect.</p></div>
+        </article>
+
+        <article class="card transfer-card">
+          <div class="card-head"><div><div class="card-kicker">02 / SEND FILES</div><h2>Choose what to send</h2></div><span class="card-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5 5 5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+          <div class="transfer-tools">
+            <label class="pick" for="filePicker"><span aria-hidden="true">＋</span> Choose files</label><input id="filePicker" type="file" multiple>
+            <label class="pick" for="folderPicker"><span aria-hidden="true">▱</span> Choose folder</label><input id="folderPicker" type="file" multiple webkitdirectory>
+            <button class="primary" id="send" disabled>Send files <span aria-hidden="true">↗</span></button>
+            <button class="secondary" id="accept" disabled>Accept incoming</button>
+          </div>
+          <div class="dropzone" id="dropzone"><div><div class="drop-icon" aria-hidden="true"><svg width="27" height="27" viewBox="0 0 28 28" fill="none"><path d="M14 19V5m0 0L8.5 10.5M14 5l5.5 5.5M5 17v5a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><strong>Drop files here or browse</strong><p>Choose files or a folder · Structure is kept when supported</p></div></div>
+          <div id="selection">Nothing selected yet</div><ul id="files" aria-live="polite"></ul><progress id="progress" max="1" value="0" aria-label="Transfer progress"></progress>
+          <div class="micro-note"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.2 3.5 5v4.4c0 4 2.8 6.8 6.5 8.4 3.7-1.6 6.5-4.4 6.5-8.4V5L10 2.2Z" stroke="currentColor" stroke-width="1.4"/><path d="m7.2 10 1.8 1.8 3.8-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>Nothing is saved until the recipient accepts the incoming transfer.</span></div>
+        </article>
+
+        <article class="card status-card"><span class="status-light" id="statusLight" data-state="idle"></span><div class="status-copy"><div class="status-title">Connection status</div><div id="status" role="status" aria-live="polite">Ready when you are. Create a room or join one with a code.</div></div></article>
+      </section>
+
+      <section class="section" id="how-it-works" aria-labelledby="howTitle">
+        <div class="section-heading"><div class="eyebrow">Easy by design</div><h2 class="section-title" id="howTitle">Three steps. No account.</h2><p class="section-intro">You stay in control of the connection from start to finish.</p></div>
+        <div class="steps">
+          <article class="step"><span class="step-num">01</span><h3>Create a room</h3><p>Start a private, temporary room. Lantern gives you a code to share.</p></article>
+          <article class="step"><span class="step-num">02</span><h3>Connect your devices</h3><p>Your recipient opens Lantern and joins with that code. Keep both devices online.</p></article>
+          <article class="step"><span class="step-num">03</span><h3>Send and accept</h3><p>Pick files or a folder. The recipient reviews what arrived and chooses whether to save it.</p></article>
         </div>
-        <div id="selection">Nothing selected yet</div>
-        <ul id="files" aria-live="polite"></ul>
-        <progress id="progress" max="1" value="0" aria-label="Transfer progress"></progress>
-      </article>
+      </section>
 
-      <article class="card status-card">
-        <span class="status-light" id="statusLight" data-state="idle"></span>
-        <div class="status-copy"><div class="status-title">Connection status</div><div id="status" role="status" aria-live="polite">Ready when you are. Create a room or join one with a code.</div></div>
-      </article>
-    </section>
+      <section class="section" id="privacy" aria-labelledby="privacyTitle">
+        <div class="section-heading"><div class="eyebrow">A clear privacy picture</div><h2 class="section-title" id="privacyTitle">Your files aren't a cloud upload.</h2><p class="section-intro">Here is what Lantern's current public beta does—and doesn't—handle.</p></div>
+        <div class="privacy-grid">
+          <article class="info-card"><span class="info-icon" aria-hidden="true">↔</span><h3>What Lantern's server does</h3><p>It introduces the two devices using a temporary room code and forwards the small WebRTC setup messages needed to connect.</p></article>
+          <article class="info-card"><span class="info-icon" aria-hidden="true">⌁</span><h3>What it does not receive</h3><p>File contents travel through the encrypted peer-to-peer data channel when a direct path is available; the signaling server does not store the files.</p></article>
+          <article class="info-card"><span class="info-icon" aria-hidden="true">⏱</span><h3>Keep both devices open</h3><p>Transfers happen live between your devices. Leave both pages or the desktop app open and connected until the recipient has saved the files. Large transfers can use substantial memory.</p></article>
+        </div>
+        <div class="beta-callout"><strong>Beta limitations:</strong> the service may sleep or restart, which clears temporary rooms. Google STUN may observe public IP addresses, and some networks block direct WebRTC connections because Lantern currently has no TURN relay. The service has not had an independent security audit. Avoid sensitive files for now.</div>
+      </section>
 
-    <div class="privacy-note"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.2 3.5 5v4.4c0 4 2.8 6.8 6.5 8.4 3.7-1.6 6.5-4.4 6.5-8.4V5L10 2.2Z" stroke="currentColor" stroke-width="1.4"/><path d="m7.2 10 1.8 1.8 3.8-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Public beta: Lantern's server handles temporary room codes and WebRTC setup only; file contents are sent directly between peers over WebRTC encryption. Google STUN may see your public IP address, and some networks may block direct connections. Room state is temporary and can reset during a restart. This service is not security-audited—avoid sensitive files.</span></div>
-    <footer><span>LANTERN · DIRECT BY DESIGN</span><span><a href="https://github.com/lantern-p2p/lantern" target="_blank" rel="noopener noreferrer" style="color:inherit">OPEN SOURCE ON GITHUB ↗</a> · PUBLIC BETA</span></footer>
+      <section class="section" aria-labelledby="faqTitle">
+        <div class="section-heading"><div class="eyebrow">Good to know</div><h2 class="section-title" id="faqTitle">A few quick answers.</h2></div>
+        <div class="faq-list">
+          <article class="faq-card"><h3>Do I need to create an account?</h3><p>No. The beta is designed for a quick, one-time transfer. You only need the room code from the person you're connecting with.</p></article>
+          <article class="faq-card"><h3>Can Lantern see or keep my files?</h3><p>The signaling server is not sent file bytes. A direct connection is encrypted by WebRTC. Both devices must stay open until the transfer completes.</p></article>
+          <article class="faq-card"><h3>Why might a connection fail?</h3><p>Some firewalls and restrictive networks prevent direct peer connections. If that happens, try another network; this beta has no relay fallback yet.</p></article>
+        </div>
+      </section>
+
+      <aside class="bottom-cta"><div><strong>Want to help improve Lantern?</strong><span>Try a transfer and report bugs or ideas on GitHub.</span></div><a href="https://github.com/lantern-p2p/lantern/issues" target="_blank" rel="noopener noreferrer">Share feedback ↗</a></aside>
+    </main>
+    <footer><span>LANTERN · DIRECT BY DESIGN · PUBLIC BETA</span><span><a href="https://github.com/lantern-p2p/lantern" target="_blank" rel="noopener noreferrer">OPEN SOURCE ON GITHUB ↗</a></span></footer>
   </div>
   <script src="app.js"></script>
 </body>
